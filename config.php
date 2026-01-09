@@ -1,18 +1,18 @@
 <?php
-// Database configuration
+// Konfigurasi database
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_NAME', 'db_museum');
 
-// Create connection
+// Membuat koneksi ke database
 $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
-// Check connection
+// Cek apakah koneksi berhasil
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    die("Koneksi gagal: " . $conn->connect_error);
 }
 
-// Set charset to utf8
+// Set charset ke utf8 untuk mendukung karakter Indonesia
 $conn->set_charset("utf8");
 ?>

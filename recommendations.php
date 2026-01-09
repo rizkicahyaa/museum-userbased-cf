@@ -9,11 +9,11 @@ if (!isset($_SESSION['user_name'])) {
 
 $current_user = $_SESSION['user_name'];
 
-// Get all ratings from database
+// Ambil semua rating dari database
 $ratings_query = "SELECT user_name, museum_name, rating FROM museum_ratings";
 $ratings_result = $conn->query($ratings_query);
 
-// Build user-item matrix
+// Membangun matriks user-item (user x museum)
 $user_item_matrix = [];
 $all_museums = [];
 $all_users = [];
@@ -38,50 +38,58 @@ while ($row = $ratings_result->fetch_assoc()) {
     }
 }
 
-// Function to calculate cosine similarity between two users
+// Fungsi untuk menghitung cosine similarity (kemiripan) antara dua user
 function cosineSimilarity($user1_ratings, $user2_ratings) {
-    $dot_product = 0;
-    $norm1 = 0;
-    $norm2 = 0;
+    $dot_product = 0;  // Hasil perkalian dot product
+    $norm1 = 0;        // Norm (panjang vektor) user 1
+    $norm2 = 0;         // Norm (panjang vektor) user 2
     
+    // Cari museum yang direview oleh kedua user (item yang sama)
     $common_items = array_intersect_key($user1_ratings, $user2_ratings);
     
+    // Jika tidak ada museum yang sama, similarity = 0
     if (count($common_items) == 0) {
         return 0;
     }
     
+    // Hitung dot product dan norm untuk setiap museum yang sama
     foreach ($common_items as $item => $rating1) {
         $rating2 = $user2_ratings[$item];
-        $dot_product += $rating1 * $rating2;
-        $norm1 += $rating1 * $rating1;
-        $norm2 += $rating2 * $rating2;
+        $dot_product += $rating1 * $rating2;  // Akumulasi perkalian rating
+        $norm1 += $rating1 * $rating1;        // Akumulasi kuadrat rating user 1
+        $norm2 += $rating2 * $rating2;        // Akumulasi kuadrat rating user 2
     }
     
+    // Jika norm = 0, similarity = 0
     if ($norm1 == 0 || $norm2 == 0) {
         return 0;
     }
     
+    // Rumus cosine similarity: dot_product / (sqrt(norm1) * sqrt(norm2))
     return $dot_product / (sqrt($norm1) * sqrt($norm2));
 }
 
-// Get current user's ratings
+// Ambil rating dari user yang sedang login
 $current_user_ratings = isset($user_item_matrix[$current_user]) ? $user_item_matrix[$current_user] : [];
 
-// Calculate similarity with all other users
+// Hitung similarity (kemiripan) dengan semua user lain
 $user_similarities = [];
 foreach ($all_users as $user) {
+    // Skip user yang sedang login dan pastikan user tersebut ada di matrix
     if ($user != $current_user && isset($user_item_matrix[$user])) {
+        // Hitung cosine similarity antara user saat ini dengan user lain
         $similarity = cosineSimilarity($current_user_ratings, $user_item_matrix[$user]);
+        // Simpan hanya similarity yang lebih dari 0 (ada kemiripan)
         if ($similarity > 0) {
             $user_similarities[$user] = $similarity;
         }
     }
 }
 
-// Sort by similarity (descending)
+// Urutkan berdasarkan similarity dari tertinggi ke terendah
 arsort($user_similarities);
 
-// Get museums that current user hasn't rated yet
+// Ambil museum yang belum direview oleh user saat ini
 $unrated_museums = array_diff($all_museums, array_keys($current_user_ratings));
 
 // Calculate predicted ratings for unrated museums
@@ -91,30 +99,42 @@ foreach ($unrated_museums as $museum) {
     $weighted_sum = 0;
     $similarity_sum = 0;
     
-    // Get top similar users (limit to top 10 for efficiency)
+    // Ambil 10 user yang paling mirip (dibatasi untuk efisiensi)
     $top_similar_users = array_slice($user_similarities, 0, 10, true);
     
     foreach ($top_similar_users as $similar_user => $similarity) {
+        // Cek apakah user yang mirip ini sudah mereview museum tersebut
         if (isset($user_item_matrix[$similar_user][$museum])) {
             $rating = $user_item_matrix[$similar_user][$museum];
+            // Akumulasi rating yang sudah dikalikan dengan similarity (weighted)
             $weighted_sum += $similarity * $rating;
+            // Akumulasi total similarity (untuk confidence score)
+            // Confidence = seberapa banyak user mirip yang mereview museum ini
             $similarity_sum += abs($similarity);
         }
     }
     
     if ($similarity_sum > 0) {
+        // Prediksi rating = rata-rata tertimbang dari rating user-user mirip
         $predicted_rating = $weighted_sum / $similarity_sum;
         $predicted_ratings[$museum] = [
             'rating' => round($predicted_rating, 2),
+            // TINGKAT KEYAKINAN (CONFIDENCE):
+            // - Menunjukkan seberapa banyak user yang mirip dengan Anda yang sudah mereview museum ini
+            // - Semakin tinggi confidence, semakin banyak user mirip yang mereview = lebih dapat dipercaya
+            // - Confidence tinggi = rekomendasi berdasarkan banyak data dari user mirip
+            // - Confidence rendah = rekomendasi hanya berdasarkan sedikit user mirip (kurang reliable)
+            // Contoh: confidence 2.5 berarti ada beberapa user mirip (total similarity mereka = 2.5)
+            //         yang sudah mereview museum ini, jadi prediksi lebih dapat dipercaya
             'confidence' => $similarity_sum
         ];
     }
 }
 
-// Sort by predicted rating (descending)
+// Urutkan berdasarkan prediksi rating dari tertinggi ke terendah
 arsort($predicted_ratings);
 
-// Get user's reviewed museums for display
+// Ambil museum yang sudah direview user untuk ditampilkan
 $user_reviews_query = "SELECT museum_name, rating, review FROM museum_ratings WHERE user_name = ? ORDER BY created_at DESC";
 $stmt = $conn->prepare($user_reviews_query);
 $stmt->bind_param("s", $current_user);

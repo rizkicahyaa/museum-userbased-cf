@@ -2,7 +2,7 @@
 session_start();
 require_once 'config.php';
 
-// Get all unique museums from database
+// Ambil semua nama museum unik dari database
 $museums_query = "SELECT DISTINCT museum_name FROM museum_ratings ORDER BY museum_name";
 $museums_result = $conn->query($museums_query);
 
@@ -13,7 +13,7 @@ if ($museums_result && $museums_result->num_rows > 0) {
     }
 }
 
-// Get current user's reviews if logged in
+// Ambil review user yang sedang login (jika sudah login)
 $user_reviews = [];
 if (isset($_SESSION['user_name'])) {
     $user_name = $_SESSION['user_name'];
@@ -23,6 +23,7 @@ if (isset($_SESSION['user_name'])) {
     $stmt->execute();
     $result = $stmt->get_result();
     
+    // Simpan review dalam array dengan key nama museum
     while ($row = $result->fetch_assoc()) {
         $user_reviews[$row['museum_name']] = [
             'rating' => $row['rating'],
@@ -210,12 +211,13 @@ if (isset($_SESSION['user_name'])) {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Star preview on rating input
+        // Preview bintang saat user mengetik rating
         document.getElementById('rating')?.addEventListener('input', function() {
             const rating = parseInt(this.value) || 0;
             const preview = document.getElementById('starPreview');
             if (preview && rating >= 1 && rating <= 5) {
                 let stars = '';
+                // Generate bintang sesuai rating
                 for (let i = 1; i <= 5; i++) {
                     stars += i <= rating ? '<span class="star-filled">★</span>' : '<span class="star-empty">☆</span>';
                 }
