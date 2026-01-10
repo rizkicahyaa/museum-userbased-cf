@@ -53,6 +53,9 @@ if (isset($_SESSION['user_name'])) {
                 <i class="fas fa-museum me-2"></i>Museum Recommendation
             </a>
             <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="dashboard.php">
+                    <i class="fas fa-th-large me-1"></i>Dashboard
+                </a>
                 <?php if (isset($_SESSION['user_name'])): ?>
                     <span class="navbar-text me-3">
                         <i class="fas fa-user-circle me-2"></i>Halo, <?php echo htmlspecialchars($_SESSION['user_name']); ?>!

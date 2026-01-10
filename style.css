@@ -400,6 +400,15 @@ body::before {
     .rating-stars {
         font-size: 1.2rem;
     }
+    
+    .museum-image-wrapper {
+        height: 200px;
+    }
+    
+    /* Ukuran gambar di mobile */
+    .museum-image {
+        min-height: 200px;
+    }
 }
 
 /* Animation classes */
@@ -419,4 +428,85 @@ body::before {
 @keyframes slideIn {
     from { opacity: 0; transform: translateX(-30px); }
     to { opacity: 1; transform: translateX(0); }
+}
+
+/* Museum Dashboard Card Styles */
+.museum-dashboard-card {
+    transition: all 0.3s ease;
+    overflow: hidden;
+    border: none;
+}
+
+.museum-dashboard-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0,0,0,.2);
+}
+
+/* Wrapper gambar - menggunakan class Bootstrap untuk ukuran */
+.museum-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+    background: var(--gradient-1);
+}
+
+/* Menggunakan class Bootstrap img-fluid untuk responsif */
+.museum-image {
+    transition: transform 0.3s ease;
+    display: block;
+}
+
+/* Class object-fit-cover untuk konsistensi - mengatur ukuran dan object-fit */
+.object-fit-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.museum-dashboard-card:hover .museum-image {
+    transform: scale(1.1);
+}
+
+.museum-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.3) 100%);
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 1rem;
+}
+
+.museum-badge {
+    background: var(--gradient-1);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.museum-title {
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    min-height: 3rem;
+    display: flex;
+    align-items: center;
+}
+
+.museum-rating {
+    padding: 1rem 0;
+    border-top: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.museum-actions {
+    margin-top: 1rem;
 }
