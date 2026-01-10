@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Validasi rating harus antara 1-5
     if ($rating < 1 || $rating > 5) {
         $_SESSION['error'] = 'Rating harus antara 1-5!';
-        header('Location: index.php');
+        header('Location: review.php');
         exit;
     }
     
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($result->num_rows > 0) {
         $_SESSION['error'] = 'Anda sudah memberikan review untuk museum ini!';
         $stmt->close();
-        header('Location: index.php');
+        header('Location: review.php');
         exit;
     }
     $stmt->close();
@@ -50,11 +50,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     
     $stmt->close();
-    header('Location: index.php');
+    header('Location: review.php');
     exit;
 } else {
-    // Jika bukan POST request, redirect ke index
-    header('Location: index.php');
+    // Jika bukan POST request, redirect ke review
+    header('Location: review.php');
     exit;
 }
 ?>

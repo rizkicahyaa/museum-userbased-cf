@@ -135,7 +135,7 @@ if ($museums_result && $museums_result->num_rows > 0) {
 
                                 <div class="museum-actions">
                                     <?php if (isset($_SESSION['user_name'])): ?>
-                                        <a href="index.php" class="btn btn-primary btn-sm w-100">
+                                        <a href="review.php" class="btn btn-primary btn-sm w-100">
                                             <i class="fas fa-edit me-2"></i>Berikan Review
                                         </a>
                                     <?php else: ?>
@@ -156,8 +156,8 @@ if ($museums_result && $museums_result->num_rows > 0) {
                                 <i class="fas fa-inbox"></i>
                                 <h4>Belum Ada Museum</h4>
                                 <p>Belum ada museum yang tersedia. Silakan tambahkan review museum terlebih dahulu.</p>
-                                <a href="index.php" class="btn btn-primary">
-                                    <i class="fas fa-arrow-left me-2"></i>Kembali ke Beranda
+                                <a href="review.php" class="btn btn-primary">
+                                    <i class="fas fa-edit me-2"></i>Berikan Review
                                 </a>
                             </div>
                         </div>
