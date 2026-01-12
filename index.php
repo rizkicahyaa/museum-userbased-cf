@@ -126,10 +126,7 @@ if ($museums_result && $museums_result->num_rows > 0) {
                                             <i class="fas fa-star me-1"></i>
                                             <?php echo number_format($museum['avg_rating'], 2); ?>/5.00
                                         </span>
-                                        <small class="text-muted">
-                                            <i class="fas fa-comments me-1"></i>
-                                            <?php echo $museum['total_reviews']; ?> review
-                                        </small>
+                                        <!-- taruh sini -->
                                     </div>
                                 </div>
 

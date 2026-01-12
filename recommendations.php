@@ -314,10 +314,7 @@ $stmt->close();
                                             <span class="ms-2 text-muted">(<?php echo $review['rating']; ?>/5)</span>
                                         </div>
                                     </div>
-                                    <p class="mb-0 text-muted">
-                                        <i class="fas fa-quote-left me-2"></i>
-                                        <?php echo htmlspecialchars($review['review']); ?>
-                                    </p>
+                                    <!-- review ulasan -->
                                 </div>
                             </div>
                         <?php endforeach; ?>

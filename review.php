@@ -146,13 +146,13 @@ if (isset($_SESSION['user_name'])) {
                                     </div>
                                 </div>
                                 
-                                <div class="mb-4">
+                                <!-- <div class="mb-4">
                                     <label for="review" class="form-label">
                                         <i class="fas fa-comment-alt me-2 text-primary"></i>Review
                                     </label>
                                     <textarea class="form-control" id="review" name="review" rows="4" 
                                               placeholder="Tuliskan review Anda tentang museum ini..." required></textarea>
-                                </div>
+                                </div> -->
                                 
                                 <button type="submit" class="btn btn-primary btn-lg">
                                     <i class="fas fa-paper-plane me-2"></i>Submit Review
@@ -194,10 +194,7 @@ if (isset($_SESSION['user_name'])) {
                                             <span class="ms-2 text-muted">(<?php echo $review['rating']; ?>/5)</span>
                                         </div>
                                     </div>
-                                    <p class="mb-0 text-muted">
-                                        <i class="fas fa-quote-left me-2"></i>
-                                        <?php echo htmlspecialchars($review['review']); ?>
-                                    </p>
+                                    <!-- Review ulasan -->
                                 </div>
                             </div>
                         <?php endforeach; ?>
