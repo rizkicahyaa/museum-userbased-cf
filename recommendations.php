@@ -197,9 +197,9 @@ $stmt->close();
                         <i class="fas fa-inbox"></i>
                         <h4>Belum Ada Review</h4>
                         <p>Anda belum memberikan review apapun. Silakan berikan review terlebih dahulu untuk mendapatkan rekomendasi.</p>
-                        <a href="index.php" class="btn btn-primary">
+                        <!-- <a href="index.php" class="btn btn-primary btn-sm">
                             <i class="fas fa-arrow-left me-2"></i>Kembali ke Beranda
-                        </a>
+                        </a> -->
                     </div>
                 </div>
             </div>
