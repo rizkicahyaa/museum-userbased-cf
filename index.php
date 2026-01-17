@@ -111,7 +111,7 @@ if ($museums_result && $museums_result->num_rows > 0) {
 
                                 <div class="museum-actions">
                                     <?php if (isset($_SESSION['user_name'])): ?>
-                                        <a href="review.php" class="btn btn-primary btn-sm w-100">
+                                        <a href="review.php?museum=<?php echo urlencode($museum['name']); ?>" class="btn btn-primary btn-sm w-100">
                                             <i class="fas fa-edit me-2"></i>Berikan Review
                                         </a>
                                     <?php else: ?>

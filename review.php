@@ -100,8 +100,12 @@ if (isset($_SESSION['user_name'])) {
                                     </label>
                                     <select class="form-select" id="museum_name" name="museum_name" required>
                                         <option value="">-- Pilih Museum --</option>
-                                        <?php foreach ($museums as $museum): ?>
+                                        <?php 
+                                        $selected_museum = isset($_GET['museum']) ? urldecode($_GET['museum']) : '';
+                                        foreach ($museums as $museum): 
+                                        ?>
                                             <option value="<?php echo htmlspecialchars($museum); ?>" 
+                                                <?php echo ($selected_museum == $museum) ? 'selected' : ''; ?>
                                                 <?php echo isset($user_reviews[$museum]) ? 'disabled' : ''; ?>>
                                                 <?php echo htmlspecialchars($museum); ?>
                                                 <?php if (isset($user_reviews[$museum])): ?>
