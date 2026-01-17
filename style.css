@@ -19,13 +19,13 @@ body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
     background-size: 400% 400%;
     animation: gradientShift 15s ease infinite;
-    font-family: 'Nunito', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "Nunito", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     min-height: 100vh;
     position: relative;
 }
 
 body::before {
-    content: '';
+    content: "";
     position: fixed;
     top: 0;
     left: 0;
@@ -36,14 +36,20 @@ body::before {
 }
 
 @keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 .navbar {
     background: var(--gradient-1) !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,.15);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     backdrop-filter: blur(10px);
     padding: 1rem 0;
 }
@@ -72,25 +78,56 @@ body::before {
     font-weight: 500;
 }
 
+.navbar-toggler {
+    border: none;
+    padding: 0.25rem 0.5rem;
+    color: rgba(255, 255, 255, 0.8);
+    transition: color 0.3s ease;
+}
+
+.navbar-toggler:focus {
+    box-shadow: none;
+    color: white;
+}
+
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        margin-top: 1rem;
+        padding: 0.5rem;
+    }
+
+    .nav-link {
+        padding: 0.75rem 1rem !important;
+        margin: 0.25rem 0;
+    }
+
+    .nav-link:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateX(5px) translateY(0);
+    }
+}
+
 .hero-section {
     background: var(--gradient-1);
     border-radius: 20px;
     padding: 3rem 2rem;
     margin-bottom: 2rem;
     color: white;
-    box-shadow: 0 10px 40px rgba(0,0,0,.2);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
     position: relative;
     overflow: hidden;
 }
 
 .hero-section::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -50%;
     right: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
     /* Animasi rotate dihapus */
 }
 
@@ -110,7 +147,7 @@ body::before {
 }
 
 .card {
-    box-shadow: 0 10px 30px rgba(0,0,0,.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     border: none;
     border-radius: 16px;
     transition: all 0.3s ease;
@@ -120,7 +157,7 @@ body::before {
 
 .card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(0,0,0,.15);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
 }
 
 .card-header {
@@ -146,14 +183,16 @@ body::before {
     margin-bottom: 0.5rem;
 }
 
-.form-control, .form-select {
+.form-control,
+.form-select {
     border-radius: 10px;
     border: 2px solid #e5e7eb;
     padding: 0.75rem 1rem;
     transition: all 0.3s ease;
 }
 
-.form-control:focus, .form-select:focus {
+.form-control:focus,
+.form-select:focus {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
     transform: translateY(-2px);
@@ -170,7 +209,7 @@ body::before {
 }
 
 .btn::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
@@ -179,7 +218,9 @@ body::before {
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.3);
     transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
+    transition:
+        width 0.6s,
+        height 0.6s;
 }
 
 .btn:hover::before {
@@ -210,7 +251,7 @@ body::before {
 .alert {
     border-radius: 12px;
     border: none;
-    box-shadow: 0 4px 15px rgba(0,0,0,.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     padding: 1rem 1.5rem;
 }
 
@@ -279,7 +320,7 @@ body::before {
     align-items: center;
     justify-content: center;
     color: white;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     transition: width 0.6s ease;
 }
 
@@ -302,14 +343,14 @@ body::before {
     border-radius: 16px;
     padding: 1.5rem;
     margin-bottom: 1rem;
-    box-shadow: 0 4px 15px rgba(0,0,0,.08);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
     border-left: 4px solid var(--primary-color);
 }
 
 .museum-card:hover {
     transform: translateX(5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,.12);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
 }
 
 .review-card {
@@ -323,7 +364,7 @@ body::before {
 
 .review-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0,0,0,.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
 .icon-wrapper {
@@ -342,7 +383,7 @@ body::before {
 .login-card {
     background: white;
     border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0,0,0,.15);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
     overflow: hidden;
 }
 
@@ -379,27 +420,27 @@ body::before {
     .hero-section h1 {
         font-size: 1.75rem;
     }
-    
+
     .hero-section {
         padding: 2rem 1.5rem;
     }
-    
+
     .card-body {
         padding: 1.5rem;
     }
-    
+
     .table-responsive {
         font-size: 0.9em;
     }
-    
+
     .rating-stars {
         font-size: 1.2rem;
     }
-    
+
     .museum-image-wrapper {
         height: 200px;
     }
-    
+
     /* Ukuran gambar di mobile */
     .museum-image {
         min-height: 200px;
@@ -412,8 +453,14 @@ body::before {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .slide-in {
@@ -421,8 +468,14 @@ body::before {
 }
 
 @keyframes slideIn {
-    from { opacity: 0; transform: translateX(-30px); }
-    to { opacity: 1; transform: translateX(0); }
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 /* Museum Dashboard Card Styles */
@@ -434,7 +487,7 @@ body::before {
 
 .museum-dashboard-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 15px 40px rgba(0,0,0,.2);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
 }
 
 /* Wrapper gambar - menggunakan class Bootstrap untuk ukuran */
@@ -469,7 +522,7 @@ body::before {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.3) 100%);
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
     display: flex;
     align-items: flex-start;
     justify-content: flex-end;
@@ -483,7 +536,7 @@ body::before {
     border-radius: 20px;
     font-weight: 700;
     font-size: 0.9rem;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .museum-title {
@@ -509,7 +562,7 @@ body::before {
 /* Footer Styles - Mengikuti style navbar */
 .footer {
     background: var(--gradient-1) !important;
-    box-shadow: 0 -4px 20px rgba(0,0,0,.15);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
     backdrop-filter: blur(10px);
     padding: 1.5rem 0;
     margin-top: 4rem;
@@ -576,26 +629,26 @@ body::before {
     .footer {
         padding: 1.25rem 0;
     }
-    
+
     .footer-content {
         flex-direction: column;
         text-align: center;
     }
-    
+
     .footer-brand {
         font-size: 1.3rem;
     }
-    
+
     .footer-nav {
         justify-content: center;
         width: 100%;
     }
-    
+
     .footer-link {
         font-size: 0.9rem;
         padding: 0.4rem 0.8rem;
     }
-    
+
     .footer-copyright {
         font-size: 0.85rem;
         margin-top: 0.75rem;
