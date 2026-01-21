@@ -164,7 +164,7 @@ $mae = ($count_predictions > 0) ? ($total_error / $count_predictions) : 0;
         </div>
 
         <div class="card mt-4 shadow-sm">
-            <div class="card-header">
+            <div class="card-header text-white">
                 Detail Pengujian per Data
             </div>
             <div class="card-body p-0">
