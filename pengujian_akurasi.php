@@ -132,8 +132,12 @@ $mae = ($count_predictions > 0) ? ($total_error / $count_predictions) : 0;
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Pengujian Akurasi (MAE)</title>
+    <title>Artify - Pengujian Akurasi (MAE)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-light">
