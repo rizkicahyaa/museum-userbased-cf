@@ -52,6 +52,7 @@ while ($row = $result->fetch_assoc()) {
 
 // 2. Mulai Pengujian (K-Fold / Leave-One-Out sederhana)
 $total_error = 0;
+$total_squared_error = 0;
 $count_predictions = 0;
 $details = [];
 
@@ -111,6 +112,7 @@ foreach ($ratings_data as $test_case) {
         // Simpan hasil
         $error = abs($actual_rating - $predicted_rating);
         $total_error += $error;
+        $total_squared_error += pow($error, 2);
         $count_predictions++;
         
         $details[] = [
@@ -123,8 +125,13 @@ foreach ($ratings_data as $test_case) {
     }
 }
 
-// Hitung MAE
-$mae = ($count_predictions > 0) ? ($total_error / $count_predictions) : 0;
+// Hitung MAE & RMSE
+$mae = 0;
+$rmse = 0;
+if ($count_predictions > 0) {
+    $mae = $total_error / $count_predictions;
+    $rmse = sqrt($total_squared_error / $count_predictions);
+}
 
 ?>
 
@@ -139,26 +146,62 @@ $mae = ($count_predictions > 0) ? ($total_error / $count_predictions) : 0;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .metric-card { transition: transform 0.2s; }
+        .metric-card:hover { transform: translateY(-5px); }
+    </style>
 </head>
 <body class="bg-light">
     <div class="container mt-5 mb-5">
-        <div class="card shadow-sm">
+        <div class="card shadow-sm mb-4">
             <div class="card-header bg-primary text-white">
-                <h3 class="mb-0">Hasil Pengujian Akurasi (MAE)</h3>
-                <small>Metode: Leave-One-Out Cross Validation pada Data Rating</small>
+                <h3 class="mb-0">Hasil Pengujian Akurasi</h3>
+                <small>Metode: Leave-One-Out Cross Validation</small>
             </div>
-            <div class="card-body text-center">
-                <h1 class="display-4 fw-bold text-primary"><?php echo number_format($mae, 4); ?></h1>
-                <p class="lead">Mean Absolute Error (MAE)</p>
-                <div class="alert alert-info d-inline-block">
-                    <strong>Interpretasi:</strong> Rata-rata kesalahan prediksi sistem adalah 
-                    <strong><?php echo number_format($mae, 2); ?></strong> poin dari skala 5.
-                    <br>
-                    (Semakin kecil nilai MAE, semakin akurat sistem).
+            <div class="card-body">
+                <div class="row text-center">
+                    <!-- MAE CARD -->
+                    <div class="col-md-6 mb-3">
+                        <div class="card metric-card h-100 border-primary">
+                            <div class="card-body">
+                                <h6 class="text-muted text-uppercase mb-2">Mean Absolute Error (MAE)</h6>
+                                <h1 class="display-4 fw-bold text-primary"><?php echo number_format($mae, 4); ?></h1>
+                                <p class="small text-muted mb-0">Rata-rata kesalahan prediksi (absolut).</p>
+                                <div class="badge bg-primary mt-2">Semakin Kecil Semakin Baik</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- RMSE CARD -->
+                    <div class="col-md-6 mb-3">
+                        <div class="card metric-card h-100 border-danger">
+                            <div class="card-body">
+                                <h6 class="text-muted text-uppercase mb-2">Root Mean Square Error (RMSE)</h6>
+                                <h1 class="display-4 fw-bold text-danger"><?php echo number_format($rmse, 4); ?></h1>
+                                <p class="small text-muted mb-0">Hukuman lebih berat untuk kesalahan besar.</p>
+                                <div class="badge bg-danger mt-2">Indikator Stabilitas Error</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="mt-3">
-                     <span class="badge bg-secondary">Total Data: <?php echo count($ratings_data); ?></span>
-                     <span class="badge bg-success">Berhasil Diprediksi: <?php echo $count_predictions; ?></span>
+
+                <div class="alert alert-info mt-3">
+                    <strong>Interpretasi:</strong>
+                    <ul class="mb-0 mt-1">
+                        <li><strong>MAE (<?php echo number_format($mae, 2); ?>):</strong> Rata-rata prediksi meleset sekitar <?php echo number_format($mae, 2); ?> poin.</li>
+                        <li><strong>RMSE (<?php echo number_format($rmse, 2); ?>):</strong> 
+                            <?php if ($rmse > $mae + 0.3): ?>
+                                Nilai RMSE jauh lebih besar dari MAE, menandakan ada beberapa prediksi yang <strong>sangat meleset (outlier)</strong>.
+                            <?php else: ?>
+                                Nilai RMSE mendekati MAE, menandakan error sistem cukup <strong>stabil</strong>.
+                            <?php endif; ?>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="mt-2 text-center">
+                     <span class="badge bg-secondary p-2">Total Data: <?php echo count($ratings_data); ?></span>
+                     <span class="badge bg-success p-2">Berhasil Diprediksi: <?php echo $count_predictions; ?></span>
                 </div>
             </div>
         </div>
