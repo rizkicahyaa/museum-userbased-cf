@@ -68,6 +68,9 @@ $pair_similarities = [];
 $user_keys = array_keys($users);
 $count = count($user_keys);
 
+// Store logical similarities for calculation
+$full_similarities = [];
+
 for ($i = 0; $i < $count; $i++) {
     for ($j = $i + 1; $j < $count; $j++) {
         $uA = $user_keys[$i];
@@ -82,8 +85,58 @@ for ($i = 0; $i < $count; $i++) {
             'UserBName' => $users[$uB],
             'Similarity' => $sim
         ];
+
+        // Store bidirectional similarity map
+        $full_similarities[$uA][$uB] = $sim;
+        $full_similarities[$uB][$uA] = $sim;
     }
 }
+
+// --- NEW SECTION: Prediction Logic ---
+// Target: User 1 (U1)
+// Unrated Item: Keraton Yogyakarta (M3)
+$target_user_id = 'U1';
+$target_item_id = 'M3';
+$target_item_name = $museums[$target_item_id];
+
+// Get Neighbors who rated M3
+$neighbors = [];
+$total_weighted_sum = 0;
+$total_similarity = 0;
+
+if (isset($full_similarities[$target_user_id])) {
+    foreach ($full_similarities[$target_user_id] as $neighbor_id => $sim) {
+        // Check if neighbor rated the target item
+        if ($sim > 0 && isset($ratings[$neighbor_id][$target_item_id]) && $ratings[$neighbor_id][$target_item_id] > 0) {
+            $neighbor_rating = $ratings[$neighbor_id][$target_item_id];
+            
+            $weighted_rating = $neighbor_rating * $sim;
+            
+            $neighbors[] = [
+                'id' => $neighbor_id,
+                'name' => $users[$neighbor_id],
+                'rating' => $neighbor_rating,
+                'similarity' => $sim,
+                'weighted' => $weighted_rating
+            ];
+            
+            $total_weighted_sum += $weighted_rating;
+            $total_similarity += abs($sim);
+        }
+    }
+}
+
+// Sort neighbors by similarity descending
+usort($neighbors, function($a, $b) {
+    return $b['similarity'] <=> $a['similarity'];
+});
+
+// Calculate Prediction
+$predicted_rating = 0;
+if ($total_similarity > 0) {
+    $predicted_rating = $total_weighted_sum / $total_similarity;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -118,6 +171,13 @@ for ($i = 0; $i < $count; $i++) {
             text-align: left !important;
             padding-left: 20% !important;
             font-weight: 600;
+        }
+        .prediction-box {
+            background: #f8f9fa;
+            border-left: 5px solid var(--primary-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
         }
     </style>
 </head>
@@ -157,12 +217,14 @@ for ($i = 0; $i < $count; $i++) {
                                 </thead>
                                 <tbody>
                                     <?php foreach ($ratings as $u => $r): ?>
-                                    <tr>
+                                    <tr class="<?= $u == $target_user_id ? 'table-primary' : '' ?>">
                                         <td class="fw-bold text-start"><?= $users[$u] ?></td>
-                                        <?php foreach ($r as $val): ?>
+                                        <?php foreach ($r as $key => $val): ?>
                                             <td>
                                                 <?php if($val > 0): ?>
                                                     <span class="badge bg-primary rounded-pill"><?= $val ?></span>
+                                                <?php elseif($u == $target_user_id && $key == $target_item_id): ?>
+                                                    <span class="badge bg-warning text-dark rounded-pill">?</span>
                                                 <?php else: ?>
                                                     <span class="text-muted">-</span>
                                                 <?php endif; ?>
@@ -173,11 +235,14 @@ for ($i = 0; $i < $count; $i++) {
                                 </tbody>
                             </table>
                         </div>
+                        <div class="mt-2 text-end">
+                            <small class="text-muted"><span class="badge bg-warning text-dark rounded-pill">?</span> menunjukan item yang akan diprediksi ratingnya (<?= $target_item_name ?>).</small>
+                        </div>
                     </div>
                 </div>
 
                 <!-- 2. Tabel Perhitungan Kemiripan -->
-                <div class="card mb-4 slide-in" style="animation-delay: 0.2s;">
+                <div class="card mb-5 slide-in" style="animation-delay: 0.2s;">
                     <div class="card-header">
                         <h4><i class="fas fa-calculator me-2"></i>2. Hasil Perhitungan Nilai Kemiripan</h4>
                     </div>
@@ -212,6 +277,71 @@ for ($i = 0; $i < $count; $i++) {
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </div>
+
+                <!-- 3. Hasil Prediksi Rating -->
+                <div class="card mb-4 slide-in" style="animation-delay: 0.4s;">
+                    <div class="card-header">
+                        <h4><i class="fas fa-chart-line me-2"></i>3. Hasil Prediksi Rating</h4>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted mb-3">
+                            Tabel ini menunjukkan proses prediksi rating untuk <strong><?= $target_item_name ?></strong> bagi <strong><?= $users[$target_user_id] ?></strong>.
+                            Hanya pengguna yang memiliki nilai kemiripan positif dan telah memberikan rating pada museum tersebut yang digunakan dalam perhitungan.
+                        </p>
+                        
+                        <div class="table-responsive mb-4">
+                            <table class="table table-bordered table-hover text-center align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>User Tetangga (Neighbor)</th>
+                                        <th>Rating Tetangga (R)</th>
+                                        <th>Nilai Kemiripan (S)</th>
+                                        <th>Weighted Score (R x S)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($neighbors as $n): ?>
+                                    <tr>
+                                        <td class="text-start ps-4 fw-bold"><?= $n['name'] ?> (<?= $n['id'] ?>)</td>
+                                        <td><span class="badge bg-success rounded-pill"><?= $n['rating'] ?></span></td>
+                                        <td><?= number_format($n['similarity'], 2, ',', '.') ?></td>
+                                        <td class="fw-bold text-primary"><?= number_format($n['weighted'], 2, ',', '.') ?></td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                    <tr class="table-active fw-bold">
+                                        <td colspan="2" class="text-end">Total</td>
+                                        <td><?= number_format($total_similarity, 2, ',', '.') ?> (Total S)</td>
+                                        <td><?= number_format($total_weighted_sum, 2, ',', '.') ?> (Total W)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="prediction-box">
+                            <h5 class="fw-bold mb-3"><i class="fas fa-equals me-2"></i>Perhitungan Akhir</h5>
+                            <div class="d-flex align-items-center flex-wrap gap-3">
+                                <div>
+                                    <strong>Rumus:</strong><br>
+                                    Prediksi = (Total Weighted Score) / (Total Similarity)
+                                </div>
+                                <div class="vr mx-2 d-none d-md-block"></div>
+                                <div>
+                                    <strong>Hitungan:</strong><br>
+                                    <?= number_format($total_weighted_sum, 2, ',', '.') ?> / <?= number_format($total_similarity, 2, ',', '.') ?>
+                                </div>
+                                <div class="vr mx-2 d-none d-md-block"></div>
+                                <div>
+                                    <strong>Hasil Prediksi:</strong><br>
+                                    <span class="badge bg-info text-dark fs-5 shadow-sm"><?= number_format($predicted_rating, 2, ',', '.') ?></span>
+                                </div>
+                            </div>
+                            <div class="mt-3 text-success">
+                                <small><i class="fas fa-check-circle me-1"></i> Nilai <strong><?= number_format($predicted_rating, 2, ',', '.') ?></strong> menunjukkan bahwa sistem memprediksi <strong>User 1</strong> akan menyukai <strong><?= $target_item_name ?></strong>.</small>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
